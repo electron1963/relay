@@ -1,1 +1,59 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relay Control</title>
+    <style>
+        body {
+            background-image: url("/static/background.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .relay-control {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+        .top-left-image {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 150px;
+            height: 90px;
+            z-index: 10;
+        }
+        .content {
+            margin-top: 70px; /* Adjust the top margin to avoid overlap */
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <img src="/static/small_image.jpg" alt="Top Left Image" class="top-left-image">
+    <div class="content">
+        <h1>Relay Control</h1>
+        <form method="post" action="{{ url_for('refresh_status') }}">
+            <button type="submit">Refresh Relay Status</button>
+        </form>
+        {% for i in range(4) %}
+        <form method="post" action="{{ url_for('update_relay') }}" class="relay-control">
+            <div>
+                <p>Relay {{ i + 1 }} - Status: {{ 'ON' if relays[i] else 'OFF' }}</p>
+                <input type="radio" id="on{{ i }}" name="action" value="on" {% if relays[i] %}checked{% endif %}>
+                <label for="on{{ i }}">On</label>
+                <input type="radio" id="off{{ i }}" name="action" value="off" {% if not relays[i] %}checked{% endif %}>
+                <label for="off{{ i }}">Off</label>
+                <input type="hidden" name="relay_id" value="{{ i }}">
+                <button type="submit">Update Relay {{ i + 1 }}</button>
+            </div>
+        </form>
+        {% endfor %}
+    </div>
+</body>
+</html>
